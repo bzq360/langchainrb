@@ -132,8 +132,8 @@ Use the `chat` method to generate chat completions:
 messages = [
   { role: "system", content: "You are a helpful assistant." },
   { role: "user", content: "What's the weather like today?" }
-  # Google Gemini and Google VertexAI expect messages in a different format:
-  # { role: "user", parts: [{ text: "why is the sky blue?" }]}
+# Google Gemini and Google VertexAI expect messages in a different format:
+# { role: "user", parts: [{ text: "why is the sky blue?" }]}
 ]
 response = llm.chat(messages: messages)
 chat_completion = response.chat_completion
@@ -233,7 +233,7 @@ prompt = Langchain::Prompt::FewShotPromptTemplate.new(
     { "input": "happy", "output": "sad" },
     { "input": "tall", "output": "short" }
   ],
-   input_variables: ["adjective"]
+  input_variables: ["adjective"]
 )
 
 prompt.format(adjective: "good")
@@ -377,7 +377,7 @@ A typical RAG workflow follows the 3 steps below:
 1. Relevant knowledge (or data) is retrieved from the knowledge base (typically a vector search DB)
 2. A prompt, containing retrieved knowledge above, is constructed.
 3. LLM receives the prompt above to generate a text completion.
-Most common use-case for a RAG system is powering Q&A systems where users pose natural language questions and receive answers in natural language.
+   Most common use-case for a RAG system is powering Q&A systems where users pose natural language questions and receive answers in natural language.
 
 ### Vector search databases
 Langchain.rb provides a convenient unified interface on top of supported vectorsearch databases that make it easy to configure your index, add data, query and retrieve from it.
@@ -410,10 +410,10 @@ llm = Langchain::LLM::OpenAI.new(api_key: ENV["OPENAI_API_KEY"])
 
 ```ruby
 client = Langchain::Vectorsearch::Weaviate.new(
-    url: ENV["WEAVIATE_URL"],
-    api_key: ENV["WEAVIATE_API_KEY"],
-    index_name: "Documents",
-    llm: llm
+  url: ENV["WEAVIATE_URL"],
+  api_key: ENV["WEAVIATE_API_KEY"],
+  index_name: "Documents",
+  llm: llm
 )
 ```
 
@@ -439,7 +439,7 @@ Add plain text data to your vector search database:
 client.add_texts(
   texts: [
     "Begin by preheating your oven to 375°F (190°C). Prepare four boneless, skinless chicken breasts by cutting a pocket into the side of each breast, being careful not to cut all the way through. Season the chicken with salt and pepper to taste. In a large skillet, melt 2 tablespoons of unsalted butter over medium heat. Add 1 small diced onion and 2 minced garlic cloves, and cook until softened, about 3-4 minutes. Add 8 ounces of fresh spinach and cook until wilted, about 3 minutes. Remove the skillet from heat and let the mixture cool slightly.",
-      "In a bowl, combine the spinach mixture with 4 ounces of softened cream cheese, 1/4 cup of grated Parmesan cheese, 1/4 cup of shredded mozzarella cheese, and 1/4 teaspoon of red pepper flakes. Mix until well combined. Stuff each chicken breast pocket with an equal amount of the spinach mixture. Seal the pocket with a toothpick if necessary. In the same skillet, heat 1 tablespoon of olive oil over medium-high heat. Add the stuffed chicken breasts and sear on each side for 3-4 minutes, or until golden brown."
+    "In a bowl, combine the spinach mixture with 4 ounces of softened cream cheese, 1/4 cup of grated Parmesan cheese, 1/4 cup of shredded mozzarella cheese, and 1/4 teaspoon of red pepper flakes. Mix until well combined. Stuff each chicken breast pocket with an equal amount of the spinach mixture. Seal the pocket with a toothpick if necessary. In the same skillet, heat 1 tablespoon of olive oil over medium-high heat. Add the stuffed chicken breasts and sear on each side for 3-4 minutes, or until golden brown."
   ]
 )
 ```
@@ -660,7 +660,7 @@ gem install unicode -- --with-cflags="-Wno-incompatible-function-pointer-types"
 
 1. `git clone https://github.com/andreibondarev/langchainrb.git`
 2. `cp .env.example .env`, then fill out the environment variables in `.env`
-3. `bundle exec rake` to ensure that the tests pass and to run standardrb
+3. `bundle exec rake` to ensure that the tests pass and to run standardrb. Note that `Langchain::LLM::AwsBedrock` tests require valid AWS credentials. Refer to the [Aws::BedrockRuntime::Client API documentation](https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/BedrockRuntime/Client.html#initialize-instance_method) for more details.
 4. `bin/console` to load the gem in a REPL session. Feel free to add your own instances of LLMs, Tools, Agents, etc. and experiment with them.
 5. Optionally, install lefthook git hooks for pre-commit to auto lint: `gem install lefthook && lefthook install -f`
 
