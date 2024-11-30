@@ -20,6 +20,16 @@ RSpec.describe Langchain::Assistant do
       end
     end
 
+    describe "#tool_execution_callback" do
+      it "raises an error if the callback is not a Proc" do
+        expect { described_class.new(llm: llm, tool_execution_callback: "foo") }.to raise_error(ArgumentError)
+      end
+
+      it "does not raise an error if the callback is a Proc" do
+        expect { described_class.new(llm: llm, tool_execution_callback: -> {}) }.not_to raise_error
+      end
+    end
+
     it "raises an error if LLM class does not implement `chat()` method" do
       llm = Langchain::LLM::Replicate.new(api_key: "123")
       expect { described_class.new(llm: llm) }.to raise_error(ArgumentError)
@@ -1110,6 +1120,10 @@ RSpec.describe Langchain::Assistant do
           },
           "content" => [
             {
+              "type" => "text",
+              "text" => "Sure, let's calculate it!"
+            },
+            {
               "type" => "tool_use",
               "id" => "toolu_014eSx9oBA5DMe8gZqaqcJ3H",
               "name" => "langchain_tool_calculator__execute",
@@ -1159,7 +1173,7 @@ RSpec.describe Langchain::Assistant do
           subject.run(auto_tool_execution: false)
 
           expect(subject.messages.last.role).to eq("assistant")
-          expect(subject.messages.last.tool_calls).to eq([raw_anthropic_response["content"].first])
+          expect(subject.messages.last.tool_calls).to eq([raw_anthropic_response["content"].last])
         end
 
         it "adds a system param to chat when instructions are given" do
@@ -1194,6 +1208,10 @@ RSpec.describe Langchain::Assistant do
                 {role: "user", content: [{text: "Please calculate 2+2", type: "text"}]},
                 {role: "assistant", content: [
                   {
+                    type: "text",
+                    text: "Sure, let's calculate it!"
+                  },
+                  {
                     "type" => "tool_use",
                     "id" => "toolu_014eSx9oBA5DMe8gZqaqcJ3H",
                     "name" => "langchain_tool_calculator__execute",
@@ -1215,7 +1233,11 @@ RSpec.describe Langchain::Assistant do
           ).and_return("4.0")
 
           subject.add_message(role: "user", content: "Please calculate 2+2")
-          subject.add_message(role: "assistant", tool_calls: raw_anthropic_response["content"])
+          subject.add_message(
+            role: "assistant",
+            content: raw_anthropic_response["content"].first["text"],
+            tool_calls: [raw_anthropic_response["content"].last]
+          )
 
           subject.run(auto_tool_execution: true)
 
